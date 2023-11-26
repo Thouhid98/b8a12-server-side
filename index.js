@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, Collection } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.28tvm1z.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -76,6 +76,15 @@ async function run() {
         })
 
         
+        // Camps Collection Apis 
+        const campCollection = client.db('Medicaldb').collection('camps')
+
+        app.post('/add-a-camp', async(req, res )=>{
+            const campitem = req.body;
+            console.log(campitem)
+            const result = await campCollection.insertOne(campitem)
+            res.send(result)
+        })
 
 
 
