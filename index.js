@@ -99,8 +99,38 @@ async function run() {
             res.send(result)
         })
 
+        // Update Camp data 
+        //Step 01: First load the data
+        app.get('/update-camp/:campId', async (req, res) => {
+            const id = req.params.campId;
+            const query = { _id: new ObjectId(id) }
+            const result = await campCollection.findOne(query);
+            res.send(result)
+        })
 
+        // Step 02: Update the data 
+        app.patch('/update-camp/:campId', async (req, res) => {
+            const item = req.body;
+            const id = req.params.campId;
+            const filter = { _id: new ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    name: item.name,
+                    campfees: item.campfees,
+                    campdes: item.campdes,
+                    location: item.location,
+                    specialservice: item.specialservice,
+                    professionals: item.professionals,
+                    targetaudience: item.targetaudience,
+                    date: item.date,
+                    image: item.image
+                }
+            }
+            const result = await campCollection.updateOne(filter, updatedDoc);
+            res.send(result)
+        })
 
+        // id, name, campfees, location, specialservice, professionals, targetaudience, date, image, campdes
 
 
 
