@@ -31,8 +31,19 @@ async function run() {
         // User Related Api 
         const userCollection = client.db('Medicaldb').collection('users')
 
-        app.post('/users', async(req, res)=>{
+        app.get('/users', async(req, res)=>{
+            const result = await userCollection.find().toArray()
+            res.send(result)
+        })
+
+        app.post('/users', async (req, res) => {
             const user = req.body;
+            // insert email if user doesnt exists:
+            const query = { email: user.email }
+            const existingUser = await userCollection.findOne(query);
+            if (existingUser) {
+                return res.send({ message: 'user already exists', insertedId: null })
+            }
             const result = await userCollection.insertOne(user)
             res.send(result)
         })
