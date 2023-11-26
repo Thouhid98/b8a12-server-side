@@ -79,6 +79,13 @@ async function run() {
         // Camps Collection Apis 
         const campCollection = client.db('Medicaldb').collection('camps')
 
+        app.get('/manage-camps', async(req, res)=>{
+            const result = await campCollection.find().toArray()
+            res.send(result)
+        })
+
+
+
         app.post('/add-a-camp', async(req, res )=>{
             const campitem = req.body;
             console.log(campitem)
