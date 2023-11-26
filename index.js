@@ -62,6 +62,19 @@ async function run() {
             res.send(result)
         })
 
+        // Make Organizer Api 
+        app.patch('/users/organizer/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    role: 'organizer'
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
         
 
 
