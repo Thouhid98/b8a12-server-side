@@ -75,21 +75,27 @@ async function run() {
             res.send(result)
         })
 
-        
+
         // Camps Collection Apis 
         const campCollection = client.db('Medicaldb').collection('camps')
 
-        app.get('/manage-camps', async(req, res)=>{
+        app.get('/manage-camps', async (req, res) => {
             const result = await campCollection.find().toArray()
             res.send(result)
         })
 
-
-
-        app.post('/add-a-camp', async(req, res )=>{
+        app.post('/add-a-camp', async (req, res) => {
             const campitem = req.body;
-            console.log(campitem)
+            // console.log(campitem)
             const result = await campCollection.insertOne(campitem)
+            res.send(result)
+        })
+
+        app.delete('/delete-camp/:campId', async (req, res) => {
+            const id = req.params.campId;
+            console.log(id);
+            const query = { _id: new ObjectId(id) }
+            const result = await campCollection.deleteOne(query);
             res.send(result)
         })
 
