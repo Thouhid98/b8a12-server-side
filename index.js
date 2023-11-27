@@ -150,6 +150,11 @@ async function run() {
 
         // Registerd Camps 
         const registeredCollection = client.db('Medicaldb').collection('registercamps')
+        
+        app.get('/manage-registered-camps', async(req, res)=>{
+            const result = await registeredCollection.find().toArray()
+            res.send(result)
+        })
 
         app.post('/manage-registered-camps', async(req, res)=>{
             const registered = req.body;
