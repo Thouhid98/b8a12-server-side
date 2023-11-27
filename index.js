@@ -145,7 +145,22 @@ async function run() {
             res.send(result)
         })
 
-        // id, name, campfees, location, specialservice, professionals, targetaudience, date, image, campdes
+        // id, name, campfees, location, specialservice, 
+        // professionals, targetaudience, date, image, campdes
+
+        // Registerd Camps 
+        const registeredCollection = client.db('Medicaldb').collection('registercamps')
+
+        app.post('/manage-registered-camps', async(req, res)=>{
+            const registered = req.body;
+            console.log(registered);
+            const result = await registeredCollection.insertOne(registered)
+            res.send(result)
+        })
+
+
+
+
 
 
 
