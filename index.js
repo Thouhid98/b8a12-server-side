@@ -84,6 +84,21 @@ async function run() {
             res.send(result)
         })
 
+        // Get Popular Camps 
+        app.get('/popular-camps', async(req, res)=>{
+            const result = await campCollection.find().toArray()
+            res.send(result)
+        })
+
+        // Get Camp Single Details 
+        app.get('/camp-details/:id', async(req, res)=>{
+            const id = req.params.id;
+            // console.log(id);
+            const query = {_id: new ObjectId(id)};
+            const result = await campCollection.findOne(query);
+            res.send(result)
+        })
+
         app.post('/add-a-camp', async (req, res) => {
             const campitem = req.body;
             // console.log(campitem)
