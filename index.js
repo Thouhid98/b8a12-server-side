@@ -3,7 +3,7 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000
 
 // middleware 
@@ -30,6 +30,13 @@ async function run() {
 
         // User Related Api 
         const userCollection = client.db('Medicaldb').collection('users')
+
+        // Jwt Releted APis 
+        app.post('/jwt', async (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+            res.send({ token })
+        })
 
         app.get('/users', async (req, res) => {
             const result = await userCollection.find().toArray()
@@ -72,6 +79,15 @@ async function run() {
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+        // User Profile 
+        app.get('/participant-profile/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: email }
+            const result = await userCollection.findOne(query)
             res.send(result)
         })
 
@@ -169,9 +185,9 @@ async function run() {
         })
 
         // Find User Registered Camps 
-        app.get('/registered-camps/:email', async(req, res)=>{
+        app.get('/registered-camps/:email', async (req, res) => {
             const email = req.params.email;
-            const query = {email: email};
+            const query = { email: email };
             const result = await registeredCollection.find(query).toArray()
             res.send(result)
         })
