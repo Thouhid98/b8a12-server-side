@@ -75,6 +75,18 @@ async function run() {
             res.send(result)
         })
 
+        // Organizer Profile 
+        // app.get('/organizer-profile/:email', async (req, res) => {
+        //     const email = req.params.email;
+        //     const query = { email: email }
+        //     const result = await userCollection.findOne(query)
+        //     let organizer = false
+        //     if (user) {
+        //         organizer = user?.role === 'organizer'
+        //     }
+        //     res.send({ admin })
+        // })
+
 
         // Camps Collection Apis 
         const campCollection = client.db('Medicaldb').collection('camps')
@@ -85,16 +97,16 @@ async function run() {
         })
 
         // Get Popular Camps 
-        app.get('/popular-camps', async(req, res)=>{
+        app.get('/popular-camps', async (req, res) => {
             const result = await campCollection.find().toArray()
             res.send(result)
         })
 
         // Get Camp Single Details 
-        app.get('/camp-details/:id', async(req, res)=>{
+        app.get('/camp-details/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await campCollection.findOne(query);
             res.send(result)
         })
@@ -150,13 +162,21 @@ async function run() {
 
         // Registerd Camps 
         const registeredCollection = client.db('Medicaldb').collection('registercamps')
-        
-        app.get('/manage-registered-camps', async(req, res)=>{
+
+        app.get('/manage-registered-camps', async (req, res) => {
             const result = await registeredCollection.find().toArray()
             res.send(result)
         })
 
-        app.post('/manage-registered-camps', async(req, res)=>{
+        // Find User Registered Camps 
+        app.get('/registered-camps/:email', async(req, res)=>{
+            const email = req.params.email;
+            const query = {email: email};
+            const result = await registeredCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        app.post('/manage-registered-camps', async (req, res) => {
             const registered = req.body;
             console.log(registered);
             const result = await registeredCollection.insertOne(registered)
