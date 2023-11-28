@@ -46,7 +46,7 @@ async function run() {
                 next()
             })
         }
-        
+
         // Checking User Admin or Not 
         app.get('/users/admin/:email', verifyToken, async (req, res) => {
             const email = req.params.email;
@@ -60,6 +60,21 @@ async function run() {
                 admin = user?.role === 'admin'
             }
             res.send({ admin })
+        })
+
+        // Checking User Organizer or Not 
+        app.get('/users/organizer/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: 'Unauthorized Access' })
+            }
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            let organizer = false
+            if (user) {
+                organizer = user?.role === 'organizer'
+            }
+            res.send({ organizer })
         })
 
 
