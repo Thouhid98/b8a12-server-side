@@ -259,6 +259,7 @@ async function run() {
         //Step 01: First load the data
         app.get('/update-camp/:campId', async (req, res) => {
             const id = req.params.campId;
+            // console.log(id)
             const query = { _id: new ObjectId(id) }
             const result = await campCollection.findOne(query);
             res.send(result)
@@ -312,8 +313,23 @@ async function run() {
             res.send(result)
         })
 
+        // Give Feedback Api 
+        const feedbackCollection = client.db('Medicaldb').collection('feedbacks')
 
+        app.get('/feedback/:id', async(req, res)=>{
+            const id = req.params.id
+            console.log(id);
+            const query = { _id: new ObjectId(id) }
+            const result = await registeredCollection.findOne(query);
+            res.send(result)
+        })
 
+        app.post('/feedback-rating', async (req, res) => {
+            const review = req.body;
+            console.log(review);
+            const result = await feedbackCollection.insertOne(review)
+            res.send(result)
+        })
 
 
 
