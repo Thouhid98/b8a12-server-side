@@ -175,7 +175,33 @@ async function run() {
             if (user) {
                 professionals = user?.role === 'professionals'
             }
-            res.send({ professionals })
+            res.send( user )
+        })
+
+        // Organizer Profile 
+        app.get('/organizer-profile/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            let organizer = false
+            if (user) {
+                organizer = user?.role === 'organizer'
+            }
+            res.send( user )
+        })
+
+        // Admin Profile 
+        app.get('/admin-profile/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            let admin = false
+            if (user) {
+                admin = user?.role === 'admin'
+            }
+            res.send( user )
         })
 
         // Organizer Profile 
