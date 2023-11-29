@@ -77,6 +77,21 @@ async function run() {
             res.send({ organizer })
         })
 
+        // Checking User Professionals or Not 
+        app.get('/users/professionals/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: 'Unauthorized Access' })
+            }
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            let professionals = false
+            if (user) {
+                professionals = user?.role === 'professionals'
+            }
+            res.send({ professionals })
+        })
+
 
         // Jwt Releted APis 
         app.post('/jwt', async (req, res) => {
@@ -144,10 +159,23 @@ async function run() {
         // User Profile 
         app.get('/participant-profile/:email', async (req, res) => {
             const email = req.params.email;
-            console.log(email);
+            // console.log(email);
             const query = { email: email }
             const result = await userCollection.findOne(query)
             res.send(result)
+        })
+
+        // Professionals Profile 
+        app.get('/professionals-profile/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            let professionals = false
+            if (user) {
+                professionals = user?.role === 'professionals'
+            }
+            res.send({ professionals })
         })
 
         // Organizer Profile 
