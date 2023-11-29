@@ -102,7 +102,6 @@ async function run() {
             res.send(result)
         })
 
-
         // Make Admin Apis 
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
@@ -123,6 +122,19 @@ async function run() {
             const updatedDoc = {
                 $set: {
                     role: 'organizer'
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+        // Make Professionals Api 
+        app.patch('/users/professionals/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    role: 'professionals'
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc)
