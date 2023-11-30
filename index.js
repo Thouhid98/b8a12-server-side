@@ -165,6 +165,40 @@ async function run() {
             res.send(result)
         })
 
+        // Update User Profile 
+        app.patch('/updateuser-profile/:email', async(req, res)=>{
+            const email = req.params.email;
+            const userItem = req.body;
+            console.log(email, userItem);
+
+            const filter = { email: email }
+            const updatedDoc = {
+                $set: {
+                    name: userItem.name,
+                    number: userItem.number,
+                    address: userItem.address,
+                    interests: userItem.interests,        
+                    image: userItem.image
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result)
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Professionals Profile 
         app.get('/professionals-profile/:email', async (req, res) => {
             const email = req.params.email;
@@ -227,11 +261,39 @@ async function run() {
 
         // Get Popular Camps 
         app.get('/popular-camps', async (req, res) => {
-            const result = await campCollection.find().toArray()
+            const result = await campCollection.find().limit(6).toArray()
             res.send(result)
         })
 
+        // app.get('/popular-camps', async (req, res) => {
+
+        //     const result = await registeredCollection.aggregate([
+        //         {
+        //             $group: {
+        //                 _id: '$campId',
+        //                 count: { $sum: 1 }
+        //             }
+        //         },
+        //         {
+        //             $sort: { count: -1 }
+        //         },
+
+        //         {
+        //             $lookup: {
+        //                 from: 'registercamps',
+        //                 localField: '_id',
+        //                 foreignField: 'campId',
+        //                 as: 'campDetails'
+        //             }
+        //         }
+        //     ]).toArray()
+
+        //     res.send(result)
+        // })
+
+
         // Get Camp Single Details 
+        
         app.get('/camp-details/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
@@ -332,7 +394,7 @@ async function run() {
         })
 
         app.get('/all-reviews', async(req, res)=>{
-            const result = await feedbackCollection.find().toArray()
+            const result = await feedbackCollection.find().sort({ _id: -1 }).toArray()
             res.send(result)
         })
 
