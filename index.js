@@ -177,8 +177,8 @@ async function run() {
                     name: userItem.name,
                     number: userItem.number,
                     address: userItem.address,
-                    interests: userItem.interests,        
-                    image: userItem.image
+                    interests: userItem.interests,                                           
+                    photo: userItem.image,    
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
@@ -212,6 +212,26 @@ async function run() {
             res.send( user )
         })
 
+        // Update Professionals Profile 
+        app.patch('/doctorprofile-update/:email', async(req, res)=>{
+            const email = req.params.email;
+            const userItem = req.body;
+            console.log(email, userItem);
+
+            const filter = { email: email }
+            const updatedDoc = {
+                $set: {
+                    name: userItem.name,
+                    number: userItem.number,
+                    address: userItem.address,                                         
+                    specialist: userItem.specialist,                                         
+                    photo: userItem.image,    
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result)
+        })
+
         // Organizer Profile 
         app.get('/organizer-profile/:email', async (req, res) => {
             const email = req.params.email;
@@ -223,6 +243,25 @@ async function run() {
                 organizer = user?.role === 'organizer'
             }
             res.send( user )
+        })
+
+        // Update Organizer Profile 
+        app.patch('/organizerprofile-update/:email', async(req, res)=>{
+            const email = req.params.email;
+            const userItem = req.body;
+            console.log(email, userItem);
+
+            const filter = { email: email }
+            const updatedDoc = {
+                $set: {
+                    name: userItem.name,
+                    number: userItem.number,
+                    address: userItem.address,                                         
+                    photo: userItem.image,    
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result)
         })
 
         // Admin Profile 
