@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000
 
@@ -433,7 +433,7 @@ async function run() {
         // Delete Registration APi 
         app.delete('/delete-registration/:id', async (req, res) => {
             const id = req.params.id;
-            console.log('delete id',id);
+            console.log('delete id', id);
             const query = { _id: new ObjectId(id) }
             const result = await registeredCollection.deleteOne(query);
             res.send(result)
@@ -442,7 +442,7 @@ async function run() {
         // Payment Related Apis 
         app.patch('/accept-payment/:id', async (req, res) => {
             const id = req.params.id;
-            console.log('payment id',id);
+            console.log('payment id', id);
             const filter = { _id: new ObjectId(id) }
             const updatedDoc = {
                 $set: {
@@ -451,6 +451,23 @@ async function run() {
             }
             const result = await registeredCollection.updateOne(filter, updatedDoc)
             res.send(result)
+        })
+
+        // Stripe Payment Intent 
+        app.post('/create-payment-intent', async (req, res) => {
+            const { price } = req.body;
+            const amount = parseInt(price * 100);
+            console.log(amount);
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: 'usd',
+                payment_method_types: ['card']
+            })
+
+            res.send({
+                clientSecret: paymentIntent.client_secret
+            })
         })
 
 
