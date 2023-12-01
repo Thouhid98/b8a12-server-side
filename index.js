@@ -166,7 +166,7 @@ async function run() {
         })
 
         // Update User Profile 
-        app.patch('/updateuser-profile/:email', async(req, res)=>{
+        app.patch('/updateuser-profile/:email', async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -177,27 +177,13 @@ async function run() {
                     name: userItem.name,
                     number: userItem.number,
                     address: userItem.address,
-                    interests: userItem.interests,                                           
-                    photo: userItem.image,    
+                    interests: userItem.interests,
+                    photo: userItem.image,
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
             res.send(result)
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // Professionals Profile 
         app.get('/professionals-profile/:email', async (req, res) => {
@@ -209,11 +195,11 @@ async function run() {
             if (user) {
                 professionals = user?.role === 'professionals'
             }
-            res.send( user )
+            res.send(user)
         })
 
         // Update Professionals Profile 
-        app.patch('/doctorprofile-update/:email', async(req, res)=>{
+        app.patch('/doctorprofile-update/:email', async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -223,9 +209,9 @@ async function run() {
                 $set: {
                     name: userItem.name,
                     number: userItem.number,
-                    address: userItem.address,                                         
-                    specialist: userItem.specialist,                                         
-                    photo: userItem.image,    
+                    address: userItem.address,
+                    specialist: userItem.specialist,
+                    photo: userItem.image,
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
@@ -242,11 +228,11 @@ async function run() {
             if (user) {
                 organizer = user?.role === 'organizer'
             }
-            res.send( user )
+            res.send(user)
         })
 
         // Update Organizer Profile 
-        app.patch('/organizerprofile-update/:email', async(req, res)=>{
+        app.patch('/organizerprofile-update/:email', async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -256,8 +242,8 @@ async function run() {
                 $set: {
                     name: userItem.name,
                     number: userItem.number,
-                    address: userItem.address,                                         
-                    photo: userItem.image,    
+                    address: userItem.address,
+                    photo: userItem.image,
                 }
             }
             const result = await userCollection.updateOne(filter, updatedDoc);
@@ -274,7 +260,7 @@ async function run() {
             if (user) {
                 admin = user?.role === 'admin'
             }
-            res.send( user )
+            res.send(user)
         })
 
         // Organizer Profile 
@@ -332,7 +318,7 @@ async function run() {
 
 
         // Get Camp Single Details 
-        
+
         app.get('/camp-details/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
@@ -417,7 +403,7 @@ async function run() {
         // Give Feedback Api 
         const feedbackCollection = client.db('Medicaldb').collection('feedbacks')
 
-        app.get('/feedback/:id', async(req, res)=>{
+        app.get('/feedback/:id', async (req, res) => {
             const id = req.params.id
             console.log(id);
             const query = { _id: new ObjectId(id) }
@@ -432,7 +418,7 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/all-reviews', async(req, res)=>{
+        app.get('/all-reviews', async (req, res) => {
             const result = await feedbackCollection.find().sort({ _id: -1 }).toArray()
             res.send(result)
         })
@@ -443,6 +429,41 @@ async function run() {
             const result = await feedbackCollection.insertOne(review)
             res.send(result)
         })
+
+        // Delete Registration APi 
+        app.delete('/delete-registration/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('delete id',id);
+            const query = { _id: new ObjectId(id) }
+            const result = await registeredCollection.deleteOne(query);
+            res.send(result)
+        })
+
+        // Payment Related Apis 
+        app.patch('/accept-payment/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('payment id',id);
+            const filter = { _id: new ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    payment: 'Accepted'
+                }
+            }
+            const result = await registeredCollection.updateOne(filter, updatedDoc)
+            res.send(result)
+        })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
