@@ -439,6 +439,15 @@ async function run() {
             res.send(result)
         })
 
+        // Load Single Camp for payment 
+        // app.get('/single-camp/:id', async(req, res)=>{
+        //     const id = req.params.id;
+        //     console.log(id);
+        //     const query =  { _id: new ObjectId(id) }
+        //     const result = await registeredCollection.findOne(query)
+        //     res.send(result)
+        // })
+
         // Payment Related Apis 
         app.patch('/accept-payment/:id', async (req, res) => {
             const id = req.params.id;
@@ -470,6 +479,24 @@ async function run() {
             })
         })
 
+        // Save Payment History In the database 
+        const paymentCollection = client.db('Medicaldb').collection('payments')
+
+        app.post('/payments', async (req, res) => {
+            const payment = req.body
+            const paymentResult = await paymentCollection.insertOne(payment)
+            console.log('Payment Info', payment);
+      
+            // Carefully Delete each item from the cart ordered 
+            const query = {
+              _id: {
+                $in: payment.registerId.map(id => new ObjectId(id))
+              }
+            }
+            const deleteResult = await registeredCollection.deleteMany(query)
+            res.send({ paymentResult, deleteResult })
+      
+          })
 
 
 
@@ -488,21 +515,22 @@ async function run() {
 
 
 
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
+
+            // Send a ping to confirm a successful connection
+            await client.db("admin").command({ ping: 1 });
+            console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        } finally {
+            // Ensures that the client will close when you finish/error
+            // await client.close();
+        }
     }
-}
 run().catch(console.dir);
 
 
-app.get('/', (req, res) => {
-    res.send('Medical Server is running')
-})
+    app.get('/', (req, res) => {
+        res.send('Medical Server is running')
+    })
 
-app.listen(port, () => {
-    console.log(`Medical camp Port ${port}`);
-})
+    app.listen(port, () => {
+        console.log(`Medical camp Port ${port}`);
+    })
