@@ -105,7 +105,7 @@ async function run() {
             res.send(result)
         })
 
-        app.post('/users', async (req, res) => {
+        app.post('/users',verifyToken, async (req, res) => {
             const user = req.body;
             // insert email if user doesnt exists:
             const query = { email: user.email }
@@ -157,7 +157,7 @@ async function run() {
         })
 
         // User Profile 
-        app.get('/participant-profile/:email', async (req, res) => {
+        app.get('/participant-profile/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             // console.log(email);
             const query = { email: email }
@@ -166,7 +166,7 @@ async function run() {
         })
 
         // Update User Profile 
-        app.patch('/updateuser-profile/:email', async (req, res) => {
+        app.patch('/updateuser-profile/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -186,7 +186,7 @@ async function run() {
         })
 
         // Professionals Profile 
-        app.get('/professionals-profile/:email', async (req, res) => {
+        app.get('/professionals-profile/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             console.log(email);
             const query = { email: email }
@@ -199,7 +199,7 @@ async function run() {
         })
 
         // Update Professionals Profile 
-        app.patch('/doctorprofile-update/:email', async (req, res) => {
+        app.patch('/doctorprofile-update/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -219,7 +219,7 @@ async function run() {
         })
 
         // Organizer Profile 
-        app.get('/organizer-profile/:email', async (req, res) => {
+        app.get('/organizer-profile/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             console.log(email);
             const query = { email: email }
@@ -232,7 +232,7 @@ async function run() {
         })
 
         // Update Organizer Profile 
-        app.patch('/organizerprofile-update/:email', async (req, res) => {
+        app.patch('/organizerprofile-update/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             const userItem = req.body;
             console.log(email, userItem);
@@ -251,7 +251,7 @@ async function run() {
         })
 
         // Admin Profile 
-        app.get('/admin-profile/:email', async (req, res) => {
+        app.get('/admin-profile/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             console.log(email);
             const query = { email: email }
@@ -262,18 +262,6 @@ async function run() {
             }
             res.send(user)
         })
-
-        // Organizer Profile 
-        // app.get('/organizer-profile/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     const query = { email: email }
-        //     const result = await userCollection.findOne(query)
-        //     let organizer = false
-        //     if (user) {
-        //         organizer = user?.role === 'organizer'
-        //     }
-        //     res.send({ admin })
-        // })
 
 
         // Camps Collection Apis 
@@ -327,14 +315,14 @@ async function run() {
             res.send(result)
         })
 
-        app.post('/add-a-camp', async (req, res) => {
+        app.post('/add-a-camp',verifyToken, async (req, res) => {
             const campitem = req.body;
             // console.log(campitem)
             const result = await campCollection.insertOne(campitem)
             res.send(result)
         })
 
-        app.delete('/delete-camp/:campId', async (req, res) => {
+        app.delete('/delete-camp/:campId',verifyToken, async (req, res) => {
             const id = req.params.campId;
             console.log(id);
             const query = { _id: new ObjectId(id) }
@@ -344,7 +332,7 @@ async function run() {
 
         // Update Camp data 
         //Step 01: First load the data
-        app.get('/update-camp/:campId', async (req, res) => {
+        app.get('/update-camp/:campId',verifyToken, async (req, res) => {
             const id = req.params.campId;
             // console.log(id)
             const query = { _id: new ObjectId(id) }
@@ -353,7 +341,7 @@ async function run() {
         })
 
         // Step 02: Update the data 
-        app.patch('/update-camp/:campId', async (req, res) => {
+        app.patch('/update-camp/:campId',verifyToken, async (req, res) => {
             const item = req.body;
             const id = req.params.campId;
             const filter = { _id: new ObjectId(id) }
@@ -380,20 +368,20 @@ async function run() {
         // Registerd Camps 
         const registeredCollection = client.db('Medicaldb').collection('registercamps')
 
-        app.get('/manage-registered-camps', async (req, res) => {
+        app.get('/manage-registered-camps',verifyToken, async (req, res) => {
             const result = await registeredCollection.find().toArray()
             res.send(result)
         })
 
         // Find User Registered Camps 
-        app.get('/registered-camps/:email', async (req, res) => {
+        app.get('/registered-camps/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
             const result = await registeredCollection.find(query).toArray()
             res.send(result)
         })
 
-        app.post('/manage-registered-camps', async (req, res) => {
+        app.post('/manage-registered-camps',verifyToken, async (req, res) => {
             const registered = req.body;
             console.log(registered);
             const result = await registeredCollection.insertOne(registered)
@@ -403,7 +391,7 @@ async function run() {
         // Give Feedback Api 
         const feedbackCollection = client.db('Medicaldb').collection('feedbacks')
 
-        app.get('/feedback/:id', async (req, res) => {
+        app.get('/feedback/:id',verifyToken, async (req, res) => {
             const id = req.params.id
             console.log(id);
             const query = { _id: new ObjectId(id) }
@@ -411,19 +399,19 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/given-reviews/:email', async (req, res) => {
+        app.get('/given-reviews/:email',verifyToken, async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
             const result = await feedbackCollection.find(query).toArray()
             res.send(result)
         })
 
-        app.get('/all-reviews', async (req, res) => {
+        app.get('/all-reviews',verifyToken,  async (req, res) => {
             const result = await feedbackCollection.find().sort({ _id: -1 }).toArray()
             res.send(result)
         })
 
-        app.post('/feedback-rating', async (req, res) => {
+        app.post('/feedback-rating',verifyToken,  async (req, res) => {
             const review = req.body;
             console.log(review);
             const result = await feedbackCollection.insertOne(review)
@@ -431,7 +419,7 @@ async function run() {
         })
 
         // Delete Registration APi 
-        app.delete('/delete-registration/:id', async (req, res) => {
+        app.delete('/delete-registration/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             console.log('delete id', id);
             const query = { _id: new ObjectId(id) }
@@ -439,14 +427,6 @@ async function run() {
             res.send(result)
         })
 
-        // Load Single Camp for payment 
-        // app.get('/single-camp/:id', async(req, res)=>{
-        //     const id = req.params.id;
-        //     console.log(id);
-        //     const query =  { _id: new ObjectId(id) }
-        //     const result = await registeredCollection.findOne(query)
-        //     res.send(result)
-        // })
 
         // Payment Related Apis 
         app.patch('/accept-payment/:id', async (req, res) => {
@@ -486,17 +466,28 @@ async function run() {
             const payment = req.body
             const paymentResult = await paymentCollection.insertOne(payment)
             console.log('Payment Info', payment);
-      
+
             // Carefully Delete each item from the cart ordered 
             const query = {
-              _id: {
-                $in: payment.registerId.map(id => new ObjectId(id))
-              }
+                _id: {
+                    $in: payment.registerId.map(id => new ObjectId(id))
+                }
             }
             const deleteResult = await registeredCollection.deleteMany(query)
             res.send({ paymentResult, deleteResult })
-      
-          })
+
+        })
+
+        // shwo user payment history 
+        app.get('/payments/:email', verifyToken, async (req, res) => {
+            const query = { email: req.params.email }
+            if (req.params.email !== req.decoded.email) {
+                return res.status(403).send({ message: 'Forbidden Access' })
+            }
+            const result = await paymentCollection.find(query).toArray()
+            res.send(result)
+
+        })
 
 
 
@@ -516,21 +507,21 @@ async function run() {
 
 
 
-            // Send a ping to confirm a successful connection
-            await client.db("admin").command({ ping: 1 });
-            console.log("Pinged your deployment. You successfully connected to MongoDB!");
-        } finally {
-            // Ensures that the client will close when you finish/error
-            // await client.close();
-        }
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+        // Ensures that the client will close when you finish/error
+        // await client.close();
     }
+}
 run().catch(console.dir);
 
 
-    app.get('/', (req, res) => {
-        res.send('Medical Server is running')
-    })
+app.get('/', (req, res) => {
+    res.send('Medical Server is running')
+})
 
-    app.listen(port, () => {
-        console.log(`Medical camp Port ${port}`);
-    })
+app.listen(port, () => {
+    console.log(`Medical camp Port ${port}`);
+})
